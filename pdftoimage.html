@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF to Image Converter</title>
+    <style>
+        body {
+            background:repeating-linear-gradient(150deg,red,red 10px,rgb(234, 238, 15) 10px, rgb(250, 61, 234) 30px);
+            background-repeat: no-repeat;
+            background-attachment:fixed;
+            font-family: Arial, sans-serif;
+            color:rgb(2, 2, 2);
+            font-size:32px;
+            
+        }
+        h1 {
+            
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            background-color:rgba(255, 255, 255,0.2);
+  border-radius:1.2rem;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.01);
+            
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+            font-size:22px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size:22px;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        #image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .image {
+            margin: 10px;
+            box-shadow: 0px 0px 10px #888888;
+        }
+        #output{
+            margin:10px auto;
+            text-align:center;
+            width:50vmax;
+            height:50px;
+            background-color: rgba(240, 255, 255, 0);
+            color:green;
+        }
+        #outputtwo{
+            margin:10px auto;
+            text-align:center;
+            width:80vmax;
+            height:50px;
+            background-color: rgba(240, 255, 255, 0);
+            color:green;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF to Image Converter</h1>
+    <form id="pdf-form">
+        <input type="file" id="pdf-input" name="pdf" accept="application/pdf">
+        <button type="button" onclick="convertToImages()">Convert to Images</button>
+        <button id="save-button" type="button" onclick="saveImages()" onclick="show()">Save Images</button>
+    </form>
+    <div id="output"></div>
+    <div id="outputtwo"></div>
+    <div id="image-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        const pdfToImages = async (pdfData) => {
+            const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const images = [];
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const viewport = page.getViewport({ scale: 1.0 });
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+              const dataURL = canvas.toDataURL('image/png');
+              images.push(dataURL);
+            }
+            return images;
+          };
+          
+          const convertToImages = async () => {
+            const pdfInput = document.getElementById('pdf-input');
+            if (pdfInput.files.length === 0) {
+              alert('Please select a PDF file.');
+              return;
+            }
+            const pdfFile = pdfInput.files[0];
+            const pdfData = await pdfFile.arrayBuffer();
+            const images = await pdfToImages(pdfData);
+            const imageContainer = document.getElementById('image-container');
+            imageContainer.innerHTML = '';
+            images.forEach(imageData => {
+              const imageElement = document.createElement('img');
+              imageElement.classList.add('image');
+              imageElement.src = imageData;
+              imageContainer.appendChild(imageElement);
+            });
+          };
+          const saveImages = () => {
+            const imageElements = document.querySelectorAll('.image');
+            if (imageElements.length === 0) {
+              alert('No images to save.');
+              return;
+            }
+            const zip = new JSZip();
+            imageElements.forEach((imageElement, index) => {
+              const imageData = imageElement.src.replace(/^data:image\/(png|jpeg);base64,/, '');
+              zip.file(`image_${index + 1}.png`, imageData, { base64: true });
+            });
+            zip.generateAsync({ type: 'blob' }).then((blob) => {
+              saveAs(blob, 'images.zip');
+            });
+            let output = document.getElementById('output')
+    let outputtwo = document.getElementById('outputtwo')
+    output.innerText='DOWNLOAD SUCCESSFUL!'
+    outputtwo.innerText='DOWNLOADED AT c://users//[currentprofile]//downloads'
+    output.style.background='white';
+    outputtwo.style.background='white';
+          };    
+          
+          var getScriptLocation = function() {
+    var fileName    = "fileName";
+    var stack       = "stack";
+    var stackTrace  = "stacktrace";
+    var loc     = null;
+
+    var matcher = function(stack, matchedLoc) { return loc = matchedLoc; };
+
+    try { 
+
+        // Invalid code
+        0();
+
+    }  catch (ex) {
+
+        if(fileName in ex) { // Firefox
+            loc = ex[fileName];
+        } else if(stackTrace in ex) { // Opera
+            ex[stackTrace].replace(/called from line \d+, column \d+ in (.*):/gm, matcher);
+        } else if(stack in ex) { // WebKit, Blink and IE10
+            ex[stack].replace(/at.*?\(?(\S+):\d+:\d+\)?$/g, matcher);
+        }
+
+        return loc;
+    }
+
+};
+
+let mystr = getScriptLocation();
+console.log(typeof mystr);
+console.log(getScriptLocation())
+let mynewstr = mystr.split('/')
+console.log(mynewstr)
+let outputstr = `C:\\Users\\${mynewstr[5]}\\Downloads>`
+console.log(outputstr)
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word DOCX to PDF Converter in Node.js & Express</title>
+    <style>
+        body{
+            background:repeating-linear-gradient(-150deg,blue,blue 10px,rgb(111, 222, 241) 10px, rgb(116, 198, 231) 30px) no-repeat fixed;
+            text-align:center;
+            font-size:32px;
+        }
+        input{
+            font-size:22px;
+        }
+        #output{
+            margin:10px auto;
+            text-align:center;
+            width:50vmax;
+            height:50px;
+            background-color: rgba(240, 255, 255, 0);
+            color:rgb(13, 255, 235);
+            font-size:32px;
+        }
+        #outputtwo{
+            margin:10px auto;
+            text-align:center;
+            width:80vmax;
+            height:50px;
+            background-color: rgba(240, 255, 255, 0);
+            color:rgb(13, 255, 235);
+            font-size:32px;
+        }
+        h1{
+            text-align:center;
+            color:rgb(0, 0, 0);
+            background-color:rgba(255, 255, 255,0.2);
+  border-radius:1.2rem;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.01);
+        }
+    </style>
+</head>
+<body>
+    <h1>WORD(.DOCX) TO PDF</h1>
+    <form action="/docxtopdf" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required id="">
+        <input type="submit" value="Download PDF File" onclick="hold()">
+        
+    </form>
+    <div id="output"></div>
+        <div id="outputtwo"></div>
+        <script>
+            function hold(){
+                setInterval(sayit,5000)
+            }
+            function sayit(){
+                let output = document.getElementById('output')
+    let outputtwo = document.getElementById('outputtwo')
+    output.innerText='DOWNLOAD SUCCESSFUL!'
+    outputtwo.innerText='DOWNLOADED AT c://users//[currentprofile]//downloads'
+    output.style.background='black';
+    outputtwo.style.background='black';
+            }
+
+        </script>
+</body>
+</html>
